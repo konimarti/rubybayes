@@ -17,11 +17,19 @@ module Rubybayes
       end
       
       def burn_in(x)
-        @burn_in = x
+        @burn_in = x.to_i
       end
       
       def iterations(x)
-        @iterations = x
+        @iterations = x.to_i
+      end
+      
+      def chains(x)
+        @chains = x.to_i
+      end
+      
+      def generate_sampler(&block)
+        @engine = block
       end
       
       def sample(&block)
@@ -31,10 +39,14 @@ module Rubybayes
       def calculate(&block)
         @calculate = block
       end
-            
+         
+      def run_chain
+        raise "not implemented yet"
+      end
+         
       def run
         raise ArgumentError.new("'sample' not set for Monte Carlo simulation") if @sample.nil? 
-        @burn_in.times {|i| @sample.call() }        
+        @burn_in.times {|i| @sample.call() } if @burn_in > 0        
         @iterations.times {|i| @results << @calculate.call( @sample.call() )}
         @results
       end   
