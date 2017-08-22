@@ -1,3 +1,6 @@
+require "rubybayes/monte_carlo_engine/metropolis_hastings"
+require "rubybayes/monte_carlo_simulation/simulation"
+require "rubybayes/monte_carlo_simulation/measurement"
 require "rubybayes/version"
 
 module Rubybayes
