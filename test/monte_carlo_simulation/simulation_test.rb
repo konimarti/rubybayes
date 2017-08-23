@@ -10,7 +10,7 @@ class SimulationTest < Minitest::Test
       calculate {|x| x * 2.0 }
     end    
     
-    results = experiment.run        
+    results = experiment.run.get_chains[0]      
     assert_equal results.size, 100
     
     mean = results.inject(0.0) {|sum,x| sum + x} / results.size
@@ -25,21 +25,28 @@ class SimulationTest < Minitest::Test
       calculate {|x| x * 2.0 }
     end    
       
-    assert_equal results.size, 100
+    assert_equal results[0].size, 100
     
-    mean = results.inject(0.0) {|sum,x| sum + x} / results.size
+    mean = results[0].inject(0.0) {|sum,x| sum + x} / results[0].size
     assert_in_epsilon 2.0, mean, 0.000001   
   end
   
-  def test_calculate_pi
+  def test_calculate_pi_with_multiple_chains
     results = Rubybayes::MonteCarloSimulation.run do
       burn_in 0
-      iterations 20000
+      iterations 4000
+      chains 5
       sample { [Kernel.rand, Kernel.rand] }
       calculate {|x| (Math.sqrt(x[0]**2+x[1]**2) <= 1.0) ? 1.0 : 0.0 }
     end    
     
-    m = Rubybayes::MonteCarloSimulation::Measurement.new(results)
+    results.each_pair do |chain, result|
+      assert_equal result.size, 4000
+    end   
+    
+    combined = Rubybayes::MonteCarloSimulation.merge_chains(results)
+    
+    m = Rubybayes::MonteCarloSimulation::Measurement.new(combined[0])
     
     assert_in_epsilon 4.0*m.mean, Math::PI, 0.1
     
@@ -52,8 +59,8 @@ class SimulationTest < Minitest::Test
       sample { [1.0, 2.0, 3.0] }
       calculate {|x| [ x[0] * 2.0, x[1] * 2.0, x[2] * 2.0] }
     end    
-      
-    params = results.transpose
+     
+    params = results[0].transpose
     
     nr_params = params.size
     assert_equal nr_params, 3

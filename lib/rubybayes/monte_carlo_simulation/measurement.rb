@@ -93,8 +93,19 @@ module Rubybayes
     end
 
     def self.extract_measurements(result)      
-      result.transpose.collect {|x| Measurement.new(x) }
-      #for arrays of hashes: result.collect{|e|e.values}.transpose
+      # results as hash {1 => [[A,B,C],[A,B,C],..], 2 => [[A,B,C],[A,B,C],..], ..}
+      # transposes into hash {1 => [[A,A,..],[B,B,..],[C,C,..]], 2 => ..}
+      # and returns hash  {1 => [Measurement.new([A,A,..]), Measurement.new([B,B,..]), ...], 2=> ..}
+      ret = {}
+      result.each_pair do |key, value| 
+        next if value.size < 1
+        if value[0].kind_of?(Array)
+          ret[key] = value.transpose.collect {|x| Measurement.new(x) }
+        else
+          ret[key] = Measurement.new(value)
+        end
+      end      
+      ret
     end
     
   end

@@ -53,9 +53,8 @@ class SimpleBaysianInferenceTest < Minitest::Test
       sample { engine.sample }  
     end
     #perform analysis on markov chain
-    results = experiment.run    
-    #puts "accepted = #{(engine.accepted*100).round(1)} %"
-    mean = results.inject(0.0) {|sum,x| sum + x} / results.size
-    assert_in_epsilon 0.6363, mean, 0.1   
+    m = Rubybayes::MonteCarloSimulation.extract_measurements(experiment.run.get_chains)            
+    
+    assert_in_epsilon 0.6363, m[0].mean, 0.1   
   end
 end
