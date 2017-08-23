@@ -38,19 +38,19 @@ module Rubybayes
     end
     
     class MetropolisHastings            
-      attr_reader :accept 
+     
       def initialize(args)
         @f = args[:f] # function(s): pdf
         @g = args[:g] # function(s): rng, pdf
         @xt = args[:start]
         
-        if args.fetch(:random_walk, false)
+        if args.fetch(:random_walk, false) == true
           extend Rubybayes::MonteCarloEngine::MetropolisHastings_RandomWalk
         else
           extend Rubybayes::MonteCarloEngine::MetropolisHastings_Independent
         end
                 
-        if args.fetch(:log, false) 
+        if args.fetch(:log, false) == true 
           extend Rubybayes::MonteCarloEngine::MetropolisHastings_Log
         else
           extend Rubybayes::MonteCarloEngine::MetropolisHastings_Normal

@@ -29,11 +29,10 @@ class ImportanceSamplingTest < Minitest::Test
       sample { engine.sample }
       calculate {|x| h=x[0]; w=x[1]; ((h>3.0)?(1.0):(0.0))*w}      
     end
+    
     #perform analysis on markov chain
     m = Rubybayes::MonteCarloSimulation.extract_measurements(experiment.run)            
     
-    puts "integral = #{m[0].mean}"
-    
-    assert_in_delta 0.001349, m[0].mean, 0.0001   
+    assert_in_delta 0.001349898, m[0].mean, 0.0001   
   end
 end
