@@ -38,7 +38,7 @@ module Rubybayes
       end      
       
       def get_merged_chains
-        merge_chains(@results)
+        Rubybayes::MonteCarloSimulation.merge_chains(@results)
       end      
             
       def get_chains

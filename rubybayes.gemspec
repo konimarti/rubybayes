@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["konimarti"]
   spec.email         = ["koni.marti@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Rubybayes provides the functionality to perform complex Baysian inference by means of Monte Carlo sampling from a posterior density.}
+  spec.description   = %q{Rubybayes comes with a Metropolis-Hastings Monte Carlo sampler and analysis tools to evaluate Baysian posterior densities. }
+  spec.homepage      = ""
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.15"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "minitest", "~> 5.0"
+  spec.add_development_dependency "rubystats", "~> 0.2.6"
 end
