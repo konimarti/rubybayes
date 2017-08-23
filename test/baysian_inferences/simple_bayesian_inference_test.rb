@@ -44,7 +44,7 @@ class SimpleBaysianInferenceTest < Minitest::Test
       g: BetaDistWrapper.new(6,3),
       start: 0.5,
       log: true,
-      random_walk: true
+      random_walk: false
     )
     #run monte carlo simulation
     experiment = Rubybayes::MonteCarloSimulation::Simulation.new do

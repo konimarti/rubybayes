@@ -1,36 +1,40 @@
 module Rubybayes
   module MonteCarloEngine
   
-    module MetropolisHastingsLog
-    
+    module MetropolisHastings_Log
       def rho(y)
-        fy = f(y)
-        fx = f(@xt)
-        gy = g(y)
-        gx = g(@xt)
-        (fy - fx + gx - gy) 
+        f(y) - f(@xt) + g(@xt) - g(y) 
       end
-      
       def eval(y)
         Math.log(rand) < rho(y)
       end	 
-      
     end
     
-    module MetropolisHastingsNormal
-    
-      def rho(y)
-        fy = f(y)
-        fx = f(@xt)
-        gy = g(y)
-        gx = g(@xt)       
-        (fy / fx) * (gx / gy)        
-      end
-      
+    module MetropolisHastings_Normal
+      def rho(y)   
+        (f(y) / f(@xt)) * (g(@xt) / g(y))        
+      end      
       def eval(y)
         Kernel.rand < rho(y)
-      end	   
-      
+      end 
+    end
+    
+    module MetropolisHastings_RandomWalk
+      def g(x)   
+        1.0
+      end      
+      def sample_from_g
+       @g.rng(@xt)
+      end 
+    end
+    
+    module MetropolisHastings_Independent
+      def g(x)   
+        @g.pdf(x)
+      end      
+      def sample_from_g
+        @g.rng()
+      end 
     end
     
     class MetropolisHastings            
@@ -40,12 +44,16 @@ module Rubybayes
         @g = args[:g] # function(s): rng, pdf
         @xt = args[:start]
         
-        @random_walk = args.fetch(:random_walk, false)
+        if args.fetch(:random_walk, false)
+          extend Rubybayes::MonteCarloEngine::MetropolisHastings_RandomWalk
+        else
+          extend Rubybayes::MonteCarloEngine::MetropolisHastings_Independent
+        end
                 
         if args.fetch(:log, false) 
-          extend Rubybayes::MonteCarloEngine::MetropolisHastingsLog
+          extend Rubybayes::MonteCarloEngine::MetropolisHastings_Log
         else
-          extend Rubybayes::MonteCarloEngine::MetropolisHastingsNormal
+          extend Rubybayes::MonteCarloEngine::MetropolisHastings_Normal
         end
         
         @accept = 0
@@ -60,22 +68,6 @@ module Rubybayes
         @f.pdf(x)
       end
       
-      def g(x)
-        if @random_walk
-          1.0
-        else
-          @g.pdf(x)
-        end
-      end
-
-      def sample_from_g
-        if @random_walk
-          @g.rng(@xt)
-        else
-          @g.rng
-        end
-      end
-     
       def sample
         @counter += 1
         y = sample_from_g
