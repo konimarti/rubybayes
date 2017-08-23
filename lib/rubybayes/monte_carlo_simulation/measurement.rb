@@ -49,6 +49,19 @@ module Rubybayes
         end
       end
       
+      def cov(b)
+        raise "cov error - dimensions of measurements don't match" if size != b.size
+        sum = 0.0
+        size.times do |i|
+          sum += (@data[i] - mean) * (b[i] - b.mean)
+        end
+        sum / (size - 1)
+      end
+      
+      def cor(b)        
+        cov(b) / (sd * b.sd)
+      end
+      
       def acf(lag = 0)
         raise ArgumentError.new("acf error - lag probably too big") if lag >= size
         x = @data.take(size-lag)

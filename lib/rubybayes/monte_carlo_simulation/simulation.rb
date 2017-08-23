@@ -25,7 +25,7 @@ module Rubybayes
           @results[nchain]=[]
           run_chain(nchain)
         end
-        self
+        get_chains
       end      
       
       def get_merged_chains
@@ -83,7 +83,7 @@ module Rubybayes
     end         
      
     def self.run(&block)
-      Rubybayes::MonteCarloSimulation::Simulation.new(&block).run.get_chains
+      Rubybayes::MonteCarloSimulation::Simulation.new(&block).run
     end
     
     def self.run_and_combine(&block)

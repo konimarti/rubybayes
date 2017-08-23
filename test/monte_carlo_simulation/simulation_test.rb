@@ -10,7 +10,7 @@ class SimulationTest < Minitest::Test
       calculate {|x| x * 2.0 }
     end    
     
-    results = experiment.run.get_chains[0]      
+    results = experiment.run[0]      
     assert_equal results.size, 100
     
     mean = results.inject(0.0) {|sum,x| sum + x} / results.size
@@ -96,6 +96,7 @@ class SimulationTest < Minitest::Test
     cum_mean.size.times{|i| diff_sum += (cum_mean[i]-cum_mean_ref[i])**2}
     assert_equal diff_sum, 0.0, "cumulative_mean"
     
+    assert_in_epsilon m2.cor(m2), 1.0 , 0.01, "m.acf, lag = 0"
     assert_in_epsilon m2.acf(0), 1.0 , 0.01, "m.acf, lag = 0"
     assert_in_epsilon m2.acf(2), 0.412 , 0.01, "m.acf, lag = 2"
     assert_in_epsilon m2.acf(6), -0.376 , 0.01, "m.acf, lag = 6"
