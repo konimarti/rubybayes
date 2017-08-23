@@ -24,5 +24,5 @@ measurement = Measurement.new( Rubybayes::MonteCarloSimulation.merge_chains(resu
 #output
 integral = 2.0 * measurement.mean
 
-puts "Calculated integral from -1.732 to 1.732 = #{integral}"
+puts "Calculated integral from -1.0 to 1.0 = #{integral}"
 puts "Correct integral = 1.33333"
