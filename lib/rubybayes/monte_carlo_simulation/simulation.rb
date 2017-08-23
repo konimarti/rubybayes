@@ -1,6 +1,17 @@
+require "thread"
+
 module Rubybayes
 
   module MonteCarloSimulation
+  
+    class EngineWrapper
+      def initialize(&block)
+        @block = block
+      end
+      def sample
+        @block.call
+      end
+    end
   
     class Simulation
     
@@ -13,6 +24,7 @@ module Rubybayes
         @iterations = 1000
         @chains = 1
         @calculate = Proc.new {|x| x}
+        @sample = nil
         @engine = nil
         #set user input
         self.instance_eval(&block)
@@ -20,11 +32,8 @@ module Rubybayes
       
       # public functions
       
-      def run        
-        @chains.times do |nchain| 
-          @results[nchain]=[]
-          run_chain(nchain)
-        end
+      def run  
+        run_simulation
         get_chains
       end      
       
@@ -52,7 +61,7 @@ module Rubybayes
         @chains = x.to_i
       end
       
-      def generate_sampler(&block)
+      def generate_engine(&block)
         @engine = block
       end
       
@@ -65,11 +74,34 @@ module Rubybayes
       end           
             
       # run simulation  
-         
-      def run_chain(nchain)        
-        raise ArgumentError.new("'sample' not set for Monte Carlo simulation") if @sample.nil? 
-        @burn_in.times {|i| @sample.call() } if @burn_in > 0        
-        @iterations.times {|i| @results[nchain] << @calculate.call( @sample.call() )}
+       
+      def run_simulation
+        threads = []
+        semaphore = Mutex.new
+        @chains.times do |nchain|           
+          threads << Thread.new do 
+            r = run_chain(nchain) 
+            semaphore.synchronize { @results[nchain] = r }
+          end
+        end        
+        threads.each {|th| th.join }
+      end
+       
+      def run_chain(nchain)           
+        if not (@engine.nil? ^ @sample.nil?)
+          raise ArgumentError.new("'sample' or 'generate_sampler' needs to be set for Monte Carlo simulation and not both")
+        end
+        
+        if @engine.nil?
+          sampling_engine = EngineWrapper.new(&@sample)
+        else
+          sampling_engine = @engine.call(nchain)
+        end
+        
+        ret = []
+        @burn_in.times {|i| sampling_engine.sample } if @burn_in > 0        
+        @iterations.times {|i| ret << @calculate.call( sampling_engine.sample )}
+        ret
       end     
           
     end 
