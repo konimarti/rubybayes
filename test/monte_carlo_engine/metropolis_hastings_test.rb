@@ -21,7 +21,7 @@ class MetropolisHastingsTest < Minitest::Test
     #perform analysis on markov chain
     m = Rubybayes::MonteCarloSimulation.extract_measurements(experiment.run)            
     
-    puts "integral = #{m[0].mean}"
+    #puts "integral = #{m[0].mean}"
     
     assert_in_delta 3.0, m[0].mean, 0.1   
   end

@@ -1,3 +1,4 @@
+require "rubybayes/baysian_posterior/make_log_posterior"
 require "rubybayes/monte_carlo_engine/importance_sampling"
 require "rubybayes/monte_carlo_engine/metropolis_hastings"
 require "rubybayes/monte_carlo_simulation/simulation"
