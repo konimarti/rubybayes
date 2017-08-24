@@ -34,6 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "rubystats", "~> 0.2.6"
-  spec.add_development_dependency "minimization", "~> 0.2.3"
+  spec.add_development_dependency "minimization", "~> 0.2.1"
 end
 

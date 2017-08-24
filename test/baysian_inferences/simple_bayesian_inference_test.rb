@@ -1,5 +1,4 @@
 require "test_helper"
-require "rubystats"
 
 class Posterior
 	def initialize

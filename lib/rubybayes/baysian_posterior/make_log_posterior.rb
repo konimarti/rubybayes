@@ -1,6 +1,3 @@
-require "minimization"
-require "rubybayes/monte_carlo_engine/metropolis_hastings"
-
 module Rubybayes
 
   module MakeLogPosterior
