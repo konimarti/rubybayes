@@ -1,3 +1,5 @@
+require "rubybayes/baysian_posterior/minimization"
+
 module Rubybayes
 
   module MakeLogPosterior
@@ -24,14 +26,14 @@ module Rubybayes
   
     def one_parameter_mode(lower=-1000.0, upper=1000.0)
         #Brent for one-parameter cases
-        min = Minimization::Brent.new(lower,upper, proc {|x| -self.pdf(x)})
+        min = Rubybayes::Minimization::Brent.new(lower,upper, proc {|x| -self.pdf(x)})
         min.iterate
         min.x_minimum	    
     end
   
     def mode
       #Nelder-Mead for multi-parameter cases
-      min = Minimization::NelderMead.new(proc {|x| -self.pdf(x)}, starting_point)
+      min = Rubybayes::Minimization::NelderMead.new(proc {|x| -self.pdf(x)}, starting_point)
       i = 0
       while min.converging? 
         i += 1
