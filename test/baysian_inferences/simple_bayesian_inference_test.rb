@@ -67,7 +67,7 @@ end
 class SimpleBaysianInferenceTest < Minitest::Test
   def test_simple_test
     #create monte carlo engine for sampling a markov chain 
-    engine = Rubybayes::MonteCarloEngine::MetropolisHastings.new(
+    engine = Rubymc::MonteCarloEngine::MetropolisHastings.new(
       f: Posterior.new,
       g: BetaDistWrapper.new(6,3),
       start: 0.5,
@@ -76,14 +76,14 @@ class SimpleBaysianInferenceTest < Minitest::Test
     )
     
     #run monte carlo simulation
-    experiment = Rubybayes::MonteCarloSimulation::Simulation.new do
+    experiment = Rubymc::MonteCarloSimulation::Simulation.new do
       burn_in 1000
       iterations 10000
       sample { engine.sample }  
     end
     
     #perform analysis on markov chain
-    m = Rubybayes::MonteCarloSimulation.extract_measurements(experiment.run)            
+    m = Rubymc::MonteCarloSimulation.extract_measurements(experiment.run)            
     
     assert_in_epsilon 0.6667, m[0].mean, 0.01   
   end
@@ -97,7 +97,7 @@ class SimpleBaysianInferenceTest < Minitest::Test
     ret = []
     10000.times{ret << posterior.sample}
     
-    m = Rubybayes::MonteCarloSimulation::Measurement.new(ret)  
+    m = Rubymc::MonteCarloSimulation::Measurement.new(ret)  
     
     #puts "mode = #{mode}"
     assert_in_epsilon 0.6875, mode, 0.001  

@@ -1,3 +1,4 @@
+require "rubymc"
 require "rubybayes/baysian_posterior/minimization"
 
 module Rubybayes
@@ -43,7 +44,7 @@ module Rubybayes
     end
   
     def generate_engine
-      Rubybayes::MonteCarloEngine::MetropolisHastings.new(
+      Rubymc::MonteCarloEngine::MetropolisHastings.new(
         f: self,
         g: proposal_density,        
         log: true,

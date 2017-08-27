@@ -1,4 +1,5 @@
 require "rubybayes"
+require "rubymc"
 require "rubystats"
 require "csv"
 
@@ -96,7 +97,7 @@ puts ""
 ret = []
 50000.times { ret << posterior.sample }
 
-a, b, sd = Rubybayes::MonteCarloSimulation.extract_measurements({0 => ret})[0]
+a, b, sd = Rubymc::MonteCarloSimulation.extract_measurements({0 => ret})[0]
 
 puts "mean of a  = #{a.mean}"
 puts "mean of b  = #{b.mean}"
